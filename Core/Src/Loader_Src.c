@@ -40,6 +40,9 @@ void *memset(void *buf, int ch, size_t n);
   */
 int Init(uint8_t MemMappedMode)
 {
+	hqspi.Instance = QUADSPI;
+	HAL_QSPI_Abort(&hqspi);
+
 	SystemInit();
 
     hqspi.Instance = QUADSPI;
@@ -55,6 +58,8 @@ int Init(uint8_t MemMappedMode)
     MX_GPIO_Init();
     MX_QUADSPI_Init();
     W25Q128F_Init();
+
+    HAL_QSPI_Abort(&hqspi);
 
     return 1;
 }

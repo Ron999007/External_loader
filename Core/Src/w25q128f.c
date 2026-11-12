@@ -212,6 +212,10 @@ HAL_StatusTypeDef W25Q128F_EraseBlock(uint32_t flash_address)
     QSPI_CommandTypeDef     sCommand = {0};
     HAL_StatusTypeDef ret;
 
+    if (HAL_QSPI_Abort(&hqspi) != HAL_OK) {
+    	return HAL_ERROR;
+    }
+
     sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
     sCommand.AddressSize       = QSPI_ADDRESS_24_BITS;
     sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
@@ -250,8 +254,12 @@ HAL_StatusTypeDef W25Q128F_Write(uint32_t flash_address, uint8_t *s, int32_t l)
     if (l > 256) {
         return HAL_ERROR;
     }
-    if ((flash_address & 0xff) != 0) {
-        return HAL_ERROR;
+    //if ((flash_address & 0xff) != 0) {
+    //    return HAL_ERROR;
+    //}
+
+    if ((ret = QSPI_WriteEnable(&hqspi)) != HAL_OK) {
+    	return ret;
     }
 
     sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
